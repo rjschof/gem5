@@ -137,6 +137,10 @@ class BaseCPU(MemObject):
     socket_id = Param.Unsigned(0, "Physical Socket identifier")
     numThreads = Param.Unsigned(1, "number of HW thread contexts")
 
+    # For PVF Analysis:
+    print("PVF = " + str(Parent.pvf_analysis))
+    pvf_analysis = Param.Unsigned(0, "PVF Analysis enabled/disabled")
+
     function_trace = Param.Bool(False, "Enable function trace")
     function_trace_start = Param.Tick(0, "Tick to start function trace")
 

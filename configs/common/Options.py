@@ -59,6 +59,10 @@ def _listPlatformTypes(option, opt, value, parser):
     PlatformConfig.print_platform_list()
     sys.exit(0)
 
+def _printPVFThing():
+    print "PVF thing triggered."
+    sys.exit(0)
+
 # Add the very basic options that work also in the case of the no ISA
 # being used, and consequently no CPUs, but rather various types of
 # testers and traffic generators.
@@ -128,6 +132,13 @@ def addNoISAOptions(parser):
 
 # Add common options that assume a non-NULL ISA.
 def addCommonOptions(parser):
+
+    # PVF Analysis options
+    parser.add_option("--pvf-analysis", type="choice", default="no",
+                      choices=["yes", "no"],
+                      help="""Program Vulnerability Factor (PVF) analysis.
+                      Options: yes: to enable; no: to disable.""")
+
     # start by adding the base options that do not assume an ISA
     addNoISAOptions(parser)
 

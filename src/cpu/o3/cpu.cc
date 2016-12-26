@@ -45,13 +45,14 @@
  */
 
 #include "arch/kernel_stats.hh"
+#include "base/pvf/pvf_main.hh"
 #include "config/the_isa.hh"
+#include "cpu/activity.hh"
 #include "cpu/checker/cpu.hh"
 #include "cpu/checker/thread_context.hh"
 #include "cpu/o3/cpu.hh"
 #include "cpu/o3/isa_specific.hh"
 #include "cpu/o3/thread_context.hh"
-#include "cpu/activity.hh"
 #include "cpu/quiesce_event.hh"
 #include "cpu/simple_thread.hh"
 #include "cpu/thread_context.hh"
@@ -69,6 +70,7 @@
 #if THE_ISA == ALPHA_ISA
 #include "arch/alpha/osfpal.hh"
 #include "debug/Activity.hh"
+
 #endif
 
 struct BaseCPUParams;

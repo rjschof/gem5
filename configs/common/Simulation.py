@@ -588,6 +588,11 @@ def run(options, root, testsys, cpu_class):
         cpt_starttick, checkpoint_dir = findCptDir(options, cptdir, testsys)
     m5.instantiate(checkpoint_dir)
 
+    if options.pvf_analysis:
+        warn("Warning you that the PVF Analysis was enabled!\n")
+
+    print("PRINTING A THINGY");
+
     # Initialization is complete.  If we're not in control of simulation
     # (that is, if we're a slave simulator acting as a component in another
     #  'master' simulator) then we're done here.  The other simulator will

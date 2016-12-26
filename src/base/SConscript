@@ -69,6 +69,10 @@ Source('loader/object_file.cc')
 Source('loader/raw_object.cc')
 Source('loader/symtab.cc')
 
+# Additions for PVF Analysis
+Source('pvf/pvf_main.cc')
+SimObject('pvf/PVFObject.py')
+
 Source('stats/text.cc')
 
 DebugFlag('Annotate', "State machine annotation debugging")

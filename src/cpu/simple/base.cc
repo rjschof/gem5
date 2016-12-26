@@ -52,6 +52,7 @@
 #include "base/inifile.hh"
 #include "base/misc.hh"
 #include "base/pollevent.hh"
+#include "base/pvf/pvf_main.hh"
 #include "base/trace.hh"
 #include "base/types.hh"
 #include "config/the_isa.hh"
@@ -95,6 +96,11 @@ BaseSimpleCPU::BaseSimpleCPU(BaseSimpleCPUParams *p)
       _status(Idle)
 {
     SimpleThread *thread;
+
+    if (p->pvf_analysis) {
+
+        PVFAnalyzer::pvfAnalysis();
+    }
 
     for (unsigned i = 0; i < numThreads; i++) {
         if (FullSystem) {
@@ -484,6 +490,7 @@ BaseSimpleCPU::preExecute()
 
     TheISA::PCState pcState = thread->pcState();
 
+
     if (isRomMicroPC(pcState.microPC())) {
         t_info.stayAtPC = false;
         curStaticInst = microcodeRom.fetchMicroop(pcState.microPC(),
@@ -527,8 +534,11 @@ BaseSimpleCPU::preExecute()
         curStaticInst = curMacroStaticInst->fetchMicroop(pcState.microPC());
     }
 
+
+
     //If we decoded an instruction this "tick", record information about it.
     if (curStaticInst) {
+         PVFAnalyzer::giveInst(curStaticInst);
 #if TRACING_ON
         traceData = tracer->getInstRecord(curTick(), thread->getTC(),
                 curStaticInst, thread->pcState(), curMacroStaticInst);

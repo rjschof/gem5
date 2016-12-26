@@ -46,6 +46,7 @@
 #ifndef __CPU_SIMPLE_BASE_HH__
 #define __CPU_SIMPLE_BASE_HH__
 
+#include "base/pvf/pvf_main.hh"
 #include "base/statistics.hh"
 #include "config/the_isa.hh"
 #include "cpu/base.hh"
@@ -158,6 +159,8 @@ class BaseSimpleCPU : public BaseCPU
     void serializeThread(CheckpointOut &cp, ThreadID tid) const override;
     void unserializeThread(CheckpointIn &cp, ThreadID tid) override;
 
+  private:
+    PVFAnalyzer pvfAnalyzer;
 };
 
 #endif // __CPU_SIMPLE_BASE_HH__
