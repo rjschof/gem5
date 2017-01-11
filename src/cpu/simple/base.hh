@@ -46,7 +46,7 @@
 #ifndef __CPU_SIMPLE_BASE_HH__
 #define __CPU_SIMPLE_BASE_HH__
 
-#include "base/pvf/pvf_main.hh"
+#include "base/pvf/pvfmain.hh"
 #include "base/statistics.hh"
 #include "config/the_isa.hh"
 #include "cpu/base.hh"
@@ -160,6 +160,8 @@ class BaseSimpleCPU : public BaseCPU
     void unserializeThread(CheckpointIn &cp, ThreadID tid) override;
 
   private:
+    // Addition for the PVFAnalysis class.
+    bool pvfEnabled;
     PVFAnalyzer pvfAnalyzer;
 };
 

@@ -70,8 +70,9 @@ Source('loader/raw_object.cc')
 Source('loader/symtab.cc')
 
 # Additions for PVF Analysis
-Source('pvf/pvf_main.cc')
-SimObject('pvf/PVFObject.py')
+Source('pvf/pvfmain.cc')
+Source('pvf/pvfreg.cc')
+SimObject('pvf/PVFAnalyzer.py')
 
 Source('stats/text.cc')
 

@@ -45,7 +45,7 @@
  */
 
 #include "arch/kernel_stats.hh"
-#include "base/pvf/pvf_main.hh"
+#include "base/pvf/pvfmain.hh"
 #include "config/the_isa.hh"
 #include "cpu/activity.hh"
 #include "cpu/checker/cpu.hh"

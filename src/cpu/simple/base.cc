@@ -52,7 +52,7 @@
 #include "base/inifile.hh"
 #include "base/misc.hh"
 #include "base/pollevent.hh"
-#include "base/pvf/pvf_main.hh"
+#include "base/pvf/pvfmain.hh"
 #include "base/trace.hh"
 #include "base/types.hh"
 #include "config/the_isa.hh"
@@ -98,8 +98,12 @@ BaseSimpleCPU::BaseSimpleCPU(BaseSimpleCPUParams *p)
     SimpleThread *thread;
 
     if (p->pvf_analysis) {
-
-        PVFAnalyzer::pvfAnalysis();
+        std::cout << "Params->pvf_analysis is_enabled="
+            << p->pvf_analysis << std::endl;
+        pvfEnabled = true;
+    }
+    else {
+        pvfEnabled = false;
     }
 
     for (unsigned i = 0; i < numThreads; i++) {
@@ -534,11 +538,14 @@ BaseSimpleCPU::preExecute()
         curStaticInst = curMacroStaticInst->fetchMicroop(pcState.microPC());
     }
 
-
-
     //If we decoded an instruction this "tick", record information about it.
     if (curStaticInst) {
-         PVFAnalyzer::giveInst(curStaticInst);
+
+        // Added for the PVF Analysis code:
+        if (pvfEnabled) {
+            pvfAnalyzer.receiveInst(curStaticInst);
+        } // -----------------------------------------
+
 #if TRACING_ON
         traceData = tracer->getInstRecord(curTick(), thread->getTC(),
                 curStaticInst, thread->pcState(), curMacroStaticInst);
