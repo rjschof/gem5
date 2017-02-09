@@ -6,18 +6,34 @@
 
 #include "cpu/static_inst.hh"
 
+#include <fstream>
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+typedef struct {
+    // The number of vulnerable instructions for a register.
+    uint64_t vulInstCount = 0;
+
+    // The current instruction number that we last wrote at. After a read,
+    // this is set to -1.
+    uint64_t writeAt = -1;
+} PVFRegister;
+
 class PVFAnalyzer {
-    struct _PVFRegister {
-        // The number of vulnerable instructions for a register.
-        int vulInstCount = 0;
-
-        // The current instruction number that we last wrote at. After a read,
-        // this is set to -1.
-        int writeAt = -1;
-    };
-    typedef _PVFRegister PVFRegister;
-
 private:
+
+    // --- Configuration information for PVF Analyzer
+    // Number of cycles per interval for analysis output
+    int instInterval;
+
+    // Whether to print out debug information with the analysis. 
+    bool debugOn;
+    // ---!
+
+    // File stream for the output.
+    ofstream statsFile;
 
     // The number of instructions that are received. Initial = 0.
     int instructionCount;
@@ -31,7 +47,7 @@ private:
 public:
 
     // Constructor for the PVFAnalyzer class.
-    PVFAnalyzer();
+    PVFAnalyzer(std::string statsFileName, int instInterval);
 
     // Deconstructor for the PVFAnalyzer class.
     ~PVFAnalyzer();

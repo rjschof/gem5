@@ -99,8 +99,10 @@ BaseSimpleCPU::BaseSimpleCPU(BaseSimpleCPUParams *p)
 
     if (p->pvf_analysis) {
         std::cout << "Params->pvf_analysis is_enabled="
-            << p->pvf_analysis << std::endl;
+            << p->pvf_analysis << " statsfile: " << p->pvf_statsfile << " interval: " <<
+            p->pvf_instinterval << std::endl;
         pvfEnabled = true;
+        pvfAnalyzer = new PVFAnalyzer(p->pvf_statsfile, p->pvf_instinterval);
     }
     else {
         pvfEnabled = false;
@@ -543,7 +545,7 @@ BaseSimpleCPU::preExecute()
 
         // Added for the PVF Analysis code:
         if (pvfEnabled) {
-            pvfAnalyzer.receiveInst(curStaticInst);
+            pvfAnalyzer->receiveInst(curStaticInst);
         } // -----------------------------------------
 
 #if TRACING_ON

@@ -37,6 +37,11 @@ IMPORTANT: If you modify this file, it's likely that the Learning gem5 book
 
 """
 
+# Modified for the changes to gem5 implemented to perform a PVF analysis on 
+# programs. 
+# 
+# Written by: Robert Schofield 
+
 import optparse
 import sys
 import os
@@ -101,6 +106,7 @@ isa = str(m5.defines.buildEnv['TARGET_ISA']).lower()
 # Run 'hello' and use the compiled ISA to find the binary
 #binary = 'tests/test-progs/hello/bin/' + isa + '/linux/hello'
 binary = 'tests/test-progs/hello-asm/src/a.out'
+#binary = 'tests/test-progs/optimized_hello/bin/linux/hello.opt'
 # Create a process for a simple "Hello World" application
 process = LiveProcess()
 # Set the command
@@ -110,10 +116,13 @@ process.cmd = [binary]
 system.cpu.workload = process
 system.cpu.createThreads()
 
+print '%s', (options.spec_input)
 
 # Manage options for PVF Analysis
 if options.pvf_analysis == "yes":
     system.cpu.pvf_analysis = 1;
+    system.cpu.pvf_statsfile = options.pvf_statsfile
+    system.cpu.pvf_instinterval = options.pvf_instinterval
     print "[CONFIG] PVF Analysis was enabled."
     #PVFAnalysis(process);
 else:

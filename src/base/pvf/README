@@ -1,0 +1,18 @@
+PVF Analysis for gem5
+Created by Robert Schofield
+Developed for Professor Changhee Jung in the Department of Computer Science at 
+Virginia Polytechnic Institute and State University, Blacksburg, VA. 
+
+Contact information:
+Robert Schofield -- rjschof@vt.edu
+
+Instructions: 
+To analyze PVF for an application, follow the template set forth in 
+configs/pvf_analysis/simple_cpu.py. To enable the PVF Analysis when the program runs, 
+add --pvf-analysis=yes to the end of your program run command. 
+Example: ./build/X86/gem5.opt configs/pvf_analysis/simple_cpu.py --pvf-analysis=yes
+
+NOTE: This is a work in progress! The methods used to calculate PVF need to be adequately 
+tested to determine that they output the expected results. 
+
+README last updated on January 15, 2017. 

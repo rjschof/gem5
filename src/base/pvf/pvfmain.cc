@@ -3,60 +3,99 @@
  * Author: Robert Schofield
  */
 
+
 #include "base/pvf/pvfmain.hh"
-#include "cpu/static_inst.hh"
+#include "cpu/base.hh"
 
-static const int NUM_REGISTERS = 32;
+#include <string>
 
-PVFAnalyzer::PVFAnalyzer() {
+using namespace std;
+
+static const int NUM_REGISTERS = 16;
+
+PVFAnalyzer::PVFAnalyzer(std::string statsFileName, int instInterval) {
     instructionCount = 0;
     //TODO: numRegisters = arch->GetNumRegistersForArch();
-    registers = new PVFRegister[NUM_REGISTERS];
-    std::cout << "PVFAnalyzer class was successfully" <<
-        "constructed." << std::endl;
+    this->registers = new PVFRegister[NUM_REGISTERS];
+    this->statsFile.open(statsFileName);
+    this->instInterval = instInterval;
+    this->debugOn = false; //true;
+    /*std::cout << "PVFAnalyzer class was successfully" <<
+        "constructed." << std::endl;*/
 }
 
 
 PVFAnalyzer::~PVFAnalyzer() {
-    // Deconstructor. Intentionally left empty.
+    // Deconstructor.
+    this->statsFile.close();
 }
 
 void
 PVFAnalyzer::receiveInst(StaticInstPtr& inst) {
+
     int numDestRegisters = inst->numDestRegs();
     int numSrcRegisters = inst->numSrcRegs();
 
+    if (debugOn) {
+        std::cout << "[" << instructionCount << "] " << inst->getName() << " instInterval = " << instInterval << std::endl;
+    }
+
     for (int i = 0; i < numSrcRegisters; i++) {
         // These are all READS.
-        registers[inst->srcRegIdx(i)].vulInstCount += (instructionCount -
-            registers[inst->srcRegIdx(i)].writeAt);
-        std::cout << "     READ: reg#= " << inst->srcRegIdx(i) << " writeAt = "
-            << registers[inst->srcRegIdx(i)].writeAt <<
-            " vulInstCount = "
-            << registers[inst->srcRegIdx(i)].vulInstCount << std::endl;
 
-        registers[inst->srcRegIdx(i)].writeAt = instructionCount;
+        if (inst->srcRegIdx(i) <= NUM_REGISTERS) {
+            registers[inst->srcRegIdx(i)].vulInstCount += (instructionCount -
+                registers[inst->srcRegIdx(i)].writeAt);
+            /*statsFile << "     READ: reg#= " << inst->srcRegIdx(i) << " writeAt = "
+                    << registers[inst->srcRegIdx(i)].writeAt <<
+                    " vulInstCount = "
+                    << registers[inst->srcRegIdx(i)].vulInstCount << std::endl;*/
+            if (debugOn) {
+                std::cout << "     READ: reg#= " << inst->srcRegIdx(i) << " writeAt = "
+                    << registers[inst->srcRegIdx(i)].writeAt <<
+                    " vulInstCount = "
+                    << registers[inst->srcRegIdx(i)].vulInstCount << std::endl;
+            }
+
+            registers[inst->srcRegIdx(i)].writeAt = instructionCount;
+        }
     }
 
     for (int i = 0; i < numDestRegisters; i++) {
         // These are all WRITES.
-        registers[inst->destRegIdx(i)].writeAt = instructionCount;
-        std::cout << "     WRITE: reg#= " << inst->destRegIdx(i) <<
-            " vulInstCount = "
-            << registers[inst->destRegIdx(i)].vulInstCount << std::endl;
+        if (inst->destRegIdx(i) <= NUM_REGISTERS) {
+            registers[inst->destRegIdx(i)].writeAt = instructionCount;
+            /*statsFile << "     WRITE: reg#= " << inst->destRegIdx(i) <<
+                    " vulInstCount = "
+                    << registers[inst->destRegIdx(i)].vulInstCount << std::endl;*/
+            if (debugOn) {
+                std::cout << "     WRITE: reg#= " << inst->destRegIdx(i) <<
+                    " vulInstCount = "
+                    << registers[inst->destRegIdx(i)].vulInstCount << std::endl;
+            }
+        }
 
     }
-    std::cout << "INSTCOUNT = " << instructionCount << std::endl;
-
-    std::cout << inst->getName() << "   PVF=" << this->getPVF() << std::endl;
 
     instructionCount++;
+
+    if (instructionCount % instInterval == 0) {
+        statsFile << "     INSTCOUNT = " << instructionCount << std::endl;
+        statsFile << "     PVF: " << this->getPVF() << std::endl;
+    }
+    
+
+    if (debugOn) {
+        std::cout << "     INSTCOUNT = " << instructionCount << std::endl;
+        std::cout << "     PVF: " << this->getPVF() << std::endl;
+    }
 
 }
 
 double
 PVFAnalyzer::getPVFReg(int regIndex) {
-    return (double)(registers[regIndex].vulInstCount / instructionCount);
+    double pvfForReg = (double) registers[regIndex].vulInstCount / (double) instructionCount;
+    return pvfForReg; 
 }
 
 double
@@ -66,11 +105,11 @@ PVFAnalyzer::getPVF() {
     }
     else {
         double pvfTotal = 0;
-        double vulICount[NUM_REGISTERS];
         for (int i = 0; i < NUM_REGISTERS; i++) {
-            vulICount[i] = registers[i].vulInstCount;
-            pvfTotal += vulICount[i] / instructionCount;
+            pvfTotal += getPVFReg(i);
+            //std::cout << "         Reg[" << i << "] PVF = " << getPVFReg(i) << std::endl;
         }
+        //std::cout << "       pvfTotal = " << pvfTotal << std::endl;
         return pvfTotal / NUM_REGISTERS;
     }
 }

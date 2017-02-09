@@ -138,8 +138,9 @@ class BaseCPU(MemObject):
     numThreads = Param.Unsigned(1, "number of HW thread contexts")
 
     # For PVF Analysis:
-    print("PVF = " + str(Parent.pvf_analysis))
     pvf_analysis = Param.Unsigned(0, "PVF Analysis enabled/disabled")
+    pvf_statsfile = Param.String("The file path for the PVF statistics output file")
+    pvf_instinterval = Param.Unsigned(0, "Cycle interval for PVF output")
 
     function_trace = Param.Bool(False, "Enable function trace")
     function_trace_start = Param.Tick(0, "Tick to start function trace")

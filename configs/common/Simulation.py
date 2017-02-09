@@ -591,8 +591,6 @@ def run(options, root, testsys, cpu_class):
     if options.pvf_analysis:
         warn("Warning you that the PVF Analysis was enabled!\n")
 
-    print("PRINTING A THINGY");
-
     # Initialization is complete.  If we're not in control of simulation
     # (that is, if we're a slave simulator acting as a component in another
     #  'master' simulator) then we're done here.  The other simulator will

@@ -162,7 +162,7 @@ class BaseSimpleCPU : public BaseCPU
   private:
     // Addition for the PVFAnalysis class.
     bool pvfEnabled;
-    PVFAnalyzer pvfAnalyzer;
+    PVFAnalyzer *pvfAnalyzer = NULL;
 };
 
 #endif // __CPU_SIMPLE_BASE_HH__
