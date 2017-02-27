@@ -70,7 +70,7 @@ elif [ $1 = "arm" ]; then
     for (( i=0; i<${count}; i++))
         do
             echo "!!! -------------------- ${benchmarks[$i]} -------------------- !!!"
-            $gem5_exec_path $config -c "${bench_home_x86}/${benchmarks[$i]}" --options="${benchmark_options[$i]}" --pvf-analysis=$pvf_analysis --pvf-statsfile="${gem5_base}/${benchmarks[$i]}_pvf_arm.txt"
+            $gem5_exec_path $config -c "${bench_home_arm}/${benchmarks[$i]}" --options="${benchmark_options[$i]}" --pvf-analysis=$pvf_analysis --pvf-statsfile="${gem5_base}/${benchmarks[$i]}_pvf_arm.txt"
         done    
 else 
     echo "Command must be $0 <x86|arm|>"

@@ -543,11 +543,6 @@ BaseSimpleCPU::preExecute()
     //If we decoded an instruction this "tick", record information about it.
     if (curStaticInst) {
 
-        // Added for the PVF Analysis code:
-        if (pvfEnabled) {
-            pvfAnalyzer->receiveInst(curStaticInst);
-        } // -----------------------------------------
-
 #if TRACING_ON
         traceData = tracer->getInstRecord(curTick(), thread->getTC(),
                 curStaticInst, thread->pcState(), curMacroStaticInst);
@@ -651,6 +646,11 @@ BaseSimpleCPU::postExecute()
         delete traceData;
         traceData = NULL;
     }
+
+    // Added for the PVF Analysis code:
+    if (pvfEnabled) {
+        pvfAnalyzer->receiveInst(curStaticInst);
+    } // -----------------------------------------
 
     // Call CPU instruction commit probes
     probeInstCommit(curStaticInst);
